@@ -1,0 +1,10 @@
+# Core libraries
+pandas==2.0.3          # Data manipulation and cleaning
+numpy==1.26.0          # Numerical computations
+
+# Database libraries
+sqlite3               # SQLite (standard library; no need to install separately)
+
+# API and data extraction
+kaggle==1.5.16         # Kaggle API for downloading datasets
+requests==2.31.0       # HTTP library for making requests (optional if using Kaggle API)
