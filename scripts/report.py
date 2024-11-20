@@ -1,6 +1,9 @@
 import sqlite3
 import pandas as pd
 
+# File path to the SQL query
+query_file_path = "sql/report_query.sql"
+
 # Connect to SQLite database
 conn = sqlite3.connect("supermarket_sales.db")
 
@@ -10,37 +13,14 @@ for table in ["Sales", "Product"]:
     row_count = pd.read_sql_query(f"SELECT COUNT(*) AS count FROM {table};", conn)
     print(row_count)
 
-# Define the revised query
-query = """
-WITH RevenueSummary AS (
-    SELECT 
-        f.branch,
-        p.product_line,
-        SUM(f.total_amount) AS total_revenue,
-        SUM(SUM(f.total_amount)) OVER (PARTITION BY f.branch) AS branch_total_revenue
-    FROM Sales f
-    JOIN Product p ON f.product_id = p.product_id
-    GROUP BY f.branch, p.product_line
-),
-RankedRevenue AS (
-    SELECT
-        branch,
-        product_line,
-        total_revenue,
-        branch_total_revenue,
-        ROUND((total_revenue * 100.0 / branch_total_revenue), 2) AS revenue_percentage,
-        RANK() OVER (PARTITION BY branch ORDER BY total_revenue DESC) AS revenue_rank
-    FROM RevenueSummary
-)
-SELECT
-    branch,
-    product_line,
-    total_revenue,
-    revenue_percentage,
-    revenue_rank
-FROM RankedRevenue
-ORDER BY branch, revenue_rank;
-"""
+# Load the query from the file
+try:
+    with open(query_file_path, "r") as file:
+        query = file.read()
+except FileNotFoundError:
+    print(f"Error: Query file not found at {query_file_path}")
+    conn.close()
+    exit()
 
 # Execute the query
 try:
@@ -55,3 +35,4 @@ except Exception as e:
 
 # Close the connection
 conn.close()
+
