@@ -53,7 +53,7 @@ Here's a step-by-step guide on how to connect to Kaggle and download the dataset
    - The dataset files (e.g., CSV files) are now ready for use. You can load the data using Python's `pandas` library:  
      ```python
      import pandas as pd
-     data = pd.read_csv('supermarket_sales.csv')  # Update with the actual file name
+     data = pd.read_csv('supermarket_sales.csv')
      print(data.head())
      ```
 
